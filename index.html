@@ -573,7 +573,7 @@ function vGruppe() {
   const mine = b.rank.find(x => x.code === S.me.gruppe) || { n: 0, course: 0, goal: 0, name: S.me.gname };
   const pc = mine.n ? Math.round(mine.course / mine.n * 100) : 0;
   return `<div class="card"><h2>Gruppe ${esc(mine.name)}</h2>${VIRTUE[mine.name] ? `<p class="sub">${esc(mine.name)}: ${esc(VIRTUE[mine.name])}</p>` : ''}
-    <p class="sub">Schaffen alle aus eurer Gruppe ihr Ziel, gewinnt ihr einen Aktivitäten-Gutschein über 100 €.</p>
+    <p class="sub">Schaffen alle aus eurer Gruppe ihr Ziel, gewinnt ihr einen Aktivitäten-Gutschein.</p>
     <div class="row"><span>Auf Kurs (keinen Tag verpasst)</span><span>${mine.course} von ${mine.n}</span></div><div class="bar"><i style="width:${pc}%"></i></div>
     ${mine.goal ? `<p class="small">Schon am Ziel: ${mine.goal}</p>` : ''}</div>
   <div class="card"><h2>Gruppen-Rangliste</h2><p class="sub">Punkte pro Person im Durchschnitt – so sind kleine und große Gruppen fair. Tippe auf einen Namen für seine Bedeutung.</p>
