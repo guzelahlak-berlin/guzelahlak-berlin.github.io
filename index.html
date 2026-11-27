@@ -453,7 +453,7 @@ function render() {
 function notice() { return S.cfg && S.cfg.hinweis ? `<div class="note">${esc(S.cfg.hinweis)}</div>` : ''; }
 function hdr() {
   let who = '';
-  if (S.mode === 'girl') who = `<div class="who"><strong>${esc(S.me.name)}</strong>Gruppe ${esc(S.me.gname)}</div>`;
+  if (S.mode === 'girl') who = `<div class="who"><strong>${esc(S.me.name)}</strong>Gruppe ${esc(S.me.gname)} · <button class="lnk" data-act="logout">Abmelden</button></div>`;
   if (S.mode === 'staff') who = `<div class="who"><strong>${esc(S.staff.label)}</strong><button class="lnk" data-act="logout">Abmelden</button></div>`;
   return `<div class="top"><div class="logo">BENİM YOLUM<b>道徳</b></div>${who}</div>`;
 }
