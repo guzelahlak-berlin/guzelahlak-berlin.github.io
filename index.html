@@ -2,7 +2,14 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bizim Yolumuz">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1d2547">
 <title>Bizim Yolumuz · Güzel Ahlak Yolunda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +26,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Nunito,system-
 h1,h2{font-family:Anton,Impact,sans-serif;font-weight:400;line-height:1.08;margin:0;letter-spacing:.01em}
 h1{font-size:clamp(34px,9vw,46px);color:var(--ink)}
 a{color:var(--ink);font-weight:800}
-#hdr{background:var(--navy);color:#f6efe0;padding:14px max(4vw,16px)}
+#hdr{background:var(--navy);color:#f6efe0;padding:max(14px,env(safe-area-inset-top)) max(4vw,16px) 14px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:640px;margin:auto}
 .logo{font-family:Anton,Impact,sans-serif;font-size:26px;color:var(--amber);font-style:italic;white-space:nowrap}
 .logo b{background:var(--red);color:#fff;font-size:13px;padding:2px 5px;border-radius:4px;margin-left:6px;font-style:normal;vertical-align:middle}
@@ -140,6 +147,7 @@ li.dim{opacity:.55}
 <nav id="nav"></nav>
 <div id="status" class="status" role="status" aria-live="polite"></div>
 <script src="config.js"></script>
+<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});</script>
 <script>
 // ===== Gemeinsame Logik (Seite und Google-Skript nutzen genau dieselbe) =====
 var BY = {
