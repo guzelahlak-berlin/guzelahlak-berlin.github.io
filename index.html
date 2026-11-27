@@ -467,7 +467,7 @@ function loginView() {
   if (S.mode === 'start') return `<div class="card hero"><h1>Güzel Ahlak Yolunda</h1><p>Dein Tatenkalender, dein Buch, Kesitler, Tages-Bingo und eure Gruppen-Rangliste – alles an einem Ort.</p>
     <p class="row2"><button class="btn" data-act="mode" data-v="girlLogin">Ich bin Schülerin</button><button class="btn alt" data-act="mode" data-v="staffLogin">Ich bin Mentorin / Abla</button></p></div>
     <p class="small center"><a href="https://dotoku.app" target="_blank" rel="noopener">Zu DOTOKU – Manga, Kesitler und mehr ›</a></p>`;
-  if (S.mode === 'staffLogin') return `<form class="card" data-form="staff"><h2>Anmelden für Mentorinnen</h2><p class="sub">Mit deinem persönlichen Code (bekommst du von deiner Mesul oder Eyalet-Abla).</p>
+  if (S.mode === 'staffLogin') return `<form class="card" data-form="staff"><h2>Anmelden für Mentorinnen</h2><p class="sub">Mit deinem persönlichen Code (bekommst du von deiner Mesul oder Lise Ablası).</p>
     <label class="l" for="scode">Code</label><input id="scode" name="code" autocomplete="off" autocapitalize="characters" required>
     ${err}<p class="row2"><button class="btn" type="submit">Anmelden</button><button class="btn alt" type="button" data-act="mode" data-v="start">Zurück</button></p></form>`;
   const f = S.form;
