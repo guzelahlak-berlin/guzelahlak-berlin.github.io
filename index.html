@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#1d2547">
-<title>Benim Yolum · Güzel Ahlak Yolunda</title>
+<title>Bizim Yolumuz · Güzel Ahlak Yolunda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -355,7 +355,7 @@ var DE_STAGES = [
   ['Die Ethik des Essens, Trinkens und Handelns', 'Das Lügen – bis zum Ende']
 ];
 
-// ===== Benim Yolum – Seite =====
+// ===== Bizim Yolumuz – Seite =====
 {
 const API = (window.BY_API || '').trim();
 const $ = s => document.querySelector(s);
@@ -434,10 +434,10 @@ function icsHref(time) {
   const d = todayISO().replace(/-/g, '');
   const end = (S.cfg.ende || '2026-12-20').replace(/-/g, '');
   const url = location.origin + location.pathname;
-  const txt = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Benim Yolum//DE', 'BEGIN:VEVENT', 'UID:benimyolum-' + Date.now() + '@guzelahlak', 'DTSTAMP:' + d + 'T000000Z',
+  const txt = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Bizim Yolumuz//DE', 'BEGIN:VEVENT', 'UID:benimyolum-' + Date.now() + '@guzelahlak', 'DTSTAMP:' + d + 'T000000Z',
     'DTSTART;TZID=Europe/Berlin:' + d + 'T' + h + m + '00', 'DURATION:PT10M', 'RRULE:FREQ=DAILY;UNTIL=' + end + 'T225959Z',
-    'SUMMARY:Benim Yolum – Tat eingetragen? 🔥', 'DESCRIPTION:Hast du deine Tat heute schon gemacht? ' + url, 'URL:' + url,
-    'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:Benim Yolum', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    'SUMMARY:Bizim Yolumuz – Tat eingetragen? 🔥', 'DESCRIPTION:Hast du deine Tat heute schon gemacht? ' + url, 'URL:' + url,
+    'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:Bizim Yolumuz', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
   return 'data:text/calendar;charset=utf-8,' + encodeURIComponent(txt);
 }
 
@@ -455,7 +455,7 @@ function hdr() {
   let who = '';
   if (S.mode === 'girl') who = `<div class="who"><strong>${esc(S.me.name)}</strong>Gruppe ${esc(S.me.gname)} · <button class="lnk" data-act="logout">Abmelden</button></div>`;
   if (S.mode === 'staff') who = `<div class="who"><strong>${esc(S.staff.label)}</strong><button class="lnk" data-act="logout">Abmelden</button></div>`;
-  return `<div class="top"><div class="logo">BENİM YOLUM<b>道徳</b></div>${who}</div>`;
+  return `<div class="top"><div class="logo">BİZİM YOLUMUZ<b>道徳</b></div>${who}</div>`;
 }
 function nav() {
   const T = [['heute', 'Heute', '<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>'], ['lesen', 'Lesen', '<path d="M3 5h7a2 2 0 012 2v12a2 2 0 00-2-2H3zM21 5h-7a2 2 0 00-2 2v12a2 2 0 012-2h7z"/>'], ['ich', 'Ich', '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'], ['gruppe', 'Gruppe', '<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 20c0-3 3-5 6-5s6 2 6 5M14 15c3 0 8 1 8 5"/>']];
@@ -684,7 +684,7 @@ document.addEventListener('click', async e => {
   if (a === 'remind') {
     const quiet = S.sd.detail.girls.filter(x => x.since >= 3 && x.zaehlt).map(x => x.name);
     const url = location.origin + location.pathname;
-    const txt = quiet.length ? `Hallo ihr Lieben 🌸 ${quiet.join(', ')} – wir vermissen euch bei Benim Yolum! Tragt eure Tat der Woche ein, jeder Tag zählt für unser Gruppenziel 🔥 ${url}` : `Hallo ihr Lieben 🌸 Ihr seid super dabei! Denkt heute an eure Tat der Woche und das Tages-Bingo 🔥 ${url}`;
+    const txt = quiet.length ? `Hallo ihr Lieben 🌸 ${quiet.join(', ')} – wir vermissen euch bei Bizim Yolumuz! Tragt eure Tat der Woche ein, jeder Tag zählt für unser Gruppenziel 🔥 ${url}` : `Hallo ihr Lieben 🌸 Ihr seid super dabei! Denkt heute an eure Tat der Woche und das Tages-Bingo 🔥 ${url}`;
     copy(txt); return;
   }
 });
