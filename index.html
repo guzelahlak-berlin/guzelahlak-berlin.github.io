@@ -343,6 +343,18 @@ var PTS_TABLE = [
   ['Tages-Bingo', 'bingo'], ['Süper Bingo (volle Karte)', 'superbingo']
 ];
 
+// Deutsches Buch (E-Book ohne Seitenzahlen): jede Etappe beginnt bei diesem Abschnitt
+var DE_STAGES = [
+  ['Der Prophet Muḥammed stammte aus …', 'Hadithe des Propheten über den guten Charakter'],
+  ['Unser Prophet war von außergewöhnlicher …', 'Er lebte sein Leben stets in Wahrhaftigkeit'],
+  ['Der mutige Prophet', 'Unser Prophet schätzte die Menschen'],
+  ['Das Grüßen fördert Zusammenhalt …', 'Dankbarkeit zeigen'],
+  ['Kranke besuchen', 'Die Moral der Schuldenrückzahlung'],
+  ['Schönes Sprechen ist eine edle Charaktereigenschaft', 'Das moralische Verhalten gegenüber Tieren'],
+  ['Das moralische Verhalten gegenüber Kindern', 'Die Sichtweise der Barmherzigkeit'],
+  ['Die Ethik des Essens, Trinkens und Handelns', 'Das Lügen – bis zum Ende']
+];
+
 // ===== Benim Yolum – Seite =====
 {
 const API = (window.BY_API || '').trim();
@@ -511,7 +523,7 @@ function vLesen() {
     const N = S.cfg.deBuchSeiten, per = N ? Math.ceil(N / 8) : 0, cnt = s.sec.filter(Boolean).length, pc = Math.round(cnt / 8 * 100);
     book = `<div class="card"><h2>Mein Buch</h2><p class="sub">Der edle Charakter Muhammeds · in 8 Etappen. Nach jeder Etappe schreibst du kurz auf, was du mitnimmst.</p>
       <div class="row"><span>${cnt} von 8 Etappen gelesen</span><span>${pc} %</span></div><div class="bar g"><i style="width:${pc}%"></i></div>
-      <ul class="list">${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<li class="wrap"><span class="rank">${i + 1}</span><span class="grow"><b>Etappe ${i + 1}</b><br><span class="small">${per ? 'S. ' + (i * per + 1) + '–' + Math.min(N, (i + 1) * per) : 'ca. ein Achtel des Buchs'}</span></span><label class="chk m0"><input type="checkbox" data-act="sec" data-i="${i}" ${s.sec[i] ? 'checked' : ''}> gelesen</label>
+      <ul class="list">${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<li class="wrap"><span class="rank">${i + 1}</span><span class="grow"><b>Etappe ${i + 1}</b><br><span class="small">${per ? 'S. ' + (i * per + 1) + '–' + Math.min(N, (i + 1) * per) : 'von „' + esc(DE_STAGES[i][0]) + '“<br>bis „' + esc(DE_STAGES[i][1]) + '“'}</span></span><label class="chk m0"><input type="checkbox" data-act="sec" data-i="${i}" ${s.sec[i] ? 'checked' : ''}> gelesen</label>
         ${s.sec[i] ? `<textarea class="refl" data-field="refl" data-i="${i}" maxlength="500" placeholder="Was nimmst du aus dieser Etappe mit? (1–2 Sätze)">${esc(s.refl[i] || '')}</textarea>` : ''}</li>`).join('')}</ul></div>`;
   }
   const kes = (S.cfg.kes || []).slice(0, 6).map((x, i) => { const open = today >= BY.addDays(S.cfg.start, i * 7 - 3);
@@ -548,8 +560,9 @@ function vIch() {
   return `<div class="stats"><div class="stat"><b>${su.pts}</b><span>Punkte</span></div><div class="stat"><b>${su.streak}</b><span>Tage am Stück</span></div><div class="stat"><b>${su.level}</b><span>Level</span></div></div>
   <div class="card mt"><h2>Mein Ziel bis zum Finale</h2><p class="sub">Nur wenn alle vier erfüllt sind, gibt es beim Finale dein Geschenk.</p>${G.map(g => `<div class="goal"><i class="${g[2] ? 'y' : ''}">${g[2] ? '✓' : ''}</i><span class="grow">${g[0]}<br><span class="small">${g[1]}</span></span></div>`).join('')}</div>
   <div class="card"><h2>Abzeichen</h2><div class="badges">${B.map(b => `<span class="badge${b[1] ? '' : ' off'}">${b[0]}</span>`).join('')}</div></div>
-  <div class="card"><h2>So gibt es Punkte</h2><table><tbody>${PTS_TABLE.map(r => `<tr><td>${r[0]}</td><td class="n">${BY.P[r[1]]} P.</td></tr>`).join('')}</tbody></table><p class="small">Deine Punkte siehst nur du und deine Mentorin. In der Rangliste zählt der Durchschnitt eurer Gruppe.</p></div>
+  <div class="card"><h2>So gibt es Punkte</h2><table><tbody>${PTS_TABLE.map(r => `<tr><td>${r[0]}</td><td class="n">${BY.P[r[1]]} P.</td></tr>`).join('')}</tbody></table><p class="small">In der Gruppen-Rangliste zählt der Durchschnitt eurer Gruppe. In der Top 10 stehen die zehn Mädchen mit den meisten Punkten.</p></div>
   <div class="card"><h2>Einstellungen</h2><p class="l">Mein Buch</p><div class="seg"><button data-act="setbuch" data-v="tr" aria-pressed="${S.me.buch === 'tr'}">Türkisch</button><button data-act="setbuch" data-v="de" aria-pressed="${S.me.buch === 'de'}">Deutsch</button></div>
+    <label class="chk wrapok"><input type="checkbox" data-act="hide" ${st().hide ? '' : 'checked'}> In der Top-10-Liste mit meinem Namen erscheinen</label>
     <p class="row2 mt"><button class="btn alt" data-act="logout">Abmelden</button></p></div>`;
 }
 
@@ -566,6 +579,9 @@ function vGruppe() {
   <div class="card"><h2>Gruppen-Rangliste</h2><p class="sub">Punkte pro Person im Durchschnitt – so sind kleine und große Gruppen fair. Tippe auf einen Namen für seine Bedeutung.</p>
     <ul class="list">${b.rank.map((x, i) => `<li class="${x.code === S.me.gruppe ? 'me' : ''}" data-act="virt" data-c="${esc(x.code)}"><span class="rank">${i + 1}</span><span class="grow"><b>${esc(x.name)}</b> <span class="small">${x.klasse === '12' ? '11./12.' : esc(x.klasse) + '.'} Kl.</span>${S.open === x.code && VIRTUE[x.name] ? `<br><span class="small">${esc(VIRTUE[x.name])}</span>` : ''}</span><span class="pts">Ø ${x.avg} P.</span></li>`).join('')}</ul>
     <p class="small">Stand: ${esc(b.at)}</p></div>
+  ${b.top && b.top.length ? `<div class="card"><h2>Top 10</h2><p class="sub">Die Mädchen mit den meisten Punkten. Wer hier nicht stehen möchte, kann das unter „Ich“ ausschalten.</p>
+    <ul class="list">${b.top.map((x, i) => `<li class="${x.id === S.me.id ? 'me' : ''}"><span class="rank">${i + 1}</span><span class="grow"><b>${esc(x.name)}</b> <span class="small">${esc(x.g)}</span>${x.streak >= 7 ? ` <span class="small">🔥 ${x.streak}</span>` : ''}</span><span class="pts">${x.pts} P.</span></li>`).join('')}</ul>
+    ${b.top.some(x => x.id === S.me.id) ? '' : `<p class="small">Du hast ${summ().pts} Punkte – jeder Tag bringt dich näher ran! 🔥</p>`}</div>` : ''}
   <div class="card"><h2>Gemeinsam geschafft</h2><ul class="list">
     <li><span class="grow"><b>${b.streak14} Mädchen</b><br><span class="small">haben 14 Tage oder mehr am Stück geschafft</span></span></li>
     <li><span class="grow"><b>${b.sec3} Mädchen</b><br><span class="small">haben schon 3 Buchteile oder mehr gelesen</span></span></li>
@@ -637,7 +653,7 @@ document.addEventListener('click', async e => {
   if (a === 'buch') { keepForm(); S.form.buch = t.dataset.v; render(); return; }
   if (a === 'logout') { logout(); return; }
   if (a === 'retry') { flush(); return; }
-  if (a === 'tab') { S.tab = t.dataset.v; S.open = null; render(); window.scrollTo(0, 0); if (S.tab === 'gruppe' || S.tab === 'heute') refreshBoard(); return; }
+  if (a === 'tab') { S.tab = t.dataset.v; S.open = null; render(); window.scrollTo(0, 0); if (S.tab === 'gruppe') refreshBoard(true); else if (S.tab === 'heute') refreshBoard(); return; }
   if (a === 'week') { S.week = +t.dataset.k; render(); return; }
   if (a === 'day') { const k = S.week || curWeek(), w = wk(k), j = +t.dataset.j; w.d[j] = w.d[j] ? 0 : 1; changed(true); return; }
   if (a === 'hd') { wk(S.week || curWeek()).hd = t.checked ? 1 : 0; changed(false); return; }
@@ -649,6 +665,7 @@ document.addEventListener('click', async e => {
   if (a === 'qa') { S.quiz.a[+t.dataset.n] = +t.dataset.m; const btn = document.querySelector('[data-act="qsend"]'); if (btn) btn.disabled = !QUIZ[S.quiz.i].every((q, n) => S.quiz.a[n] !== undefined); return; }
   if (a === 'qsend') { const i = S.quiz.i, Q = QUIZ[i], s = Q.reduce((x, q, n) => x + (S.quiz.a[n] === q.c ? 1 : 0), 0); st().quiz[i] = { a: S.quiz.a.slice(), s }; changed(true); document.querySelector('.sheet') && document.querySelector('.sheet').scrollTo(0, 0); return; }
   if (a === 'qclose') { S.quiz = null; render(); return; }
+  if (a === 'hide') { st().hide = !t.checked; changed(false); return; }
   if (a === 'setbuch') { S.me.buch = t.dataset.v; changed(true); return; }
   if (a === 'virt') { S.open = S.open === t.dataset.c ? null : t.dataset.c; render(); return; }
   // Mitarbeiterinnen
