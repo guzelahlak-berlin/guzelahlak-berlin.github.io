@@ -3,23 +3,719 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Benim Yolum – bald geht's los</title>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#1d2547">
+<title>Benim Yolum · Güzel Ahlak Yolunda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
-body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f6efe0;color:#1d2547;font:17px/1.5 Nunito,system-ui,sans-serif;padding:20px;box-sizing:border-box}
-.card{max-width:460px;background:#fffdf7;border:3px solid #1d2547;border-radius:18px;box-shadow:6px 6px 0 #1d2547;padding:28px;text-align:center}
-h1{font:400 clamp(40px,12vw,64px)/1 Anton,Impact,sans-serif;color:#e8a94a;font-style:italic;margin:0 0 6px;text-shadow:3px 3px 0 #1d2547}
-.k{display:inline-block;background:#d9574a;color:#fff;font-weight:800;padding:4px 12px;border-radius:99px;font-size:14px;margin-bottom:16px}
-a{display:inline-block;margin-top:18px;background:#1d2547;color:#f6efe0;text-decoration:none;font-weight:800;padding:12px 20px;border-radius:12px}
+/* VOICE: fröhlich, comic-haft wie dotoku.app – für Mädchen von 15 bis 18
+   IDEA: der gedruckte Tatenkalender als Handy-Seite zum Antippen
+   PICTURE: die 7 Tageskreise der Woche und das Bingo-Feld
+   COLOUR and TYPE: DOTOKU-Navy, Amber und Rot auf Creme; Anton für Titel, Nunito für Text
+   LAYOUT: eine Spalte, Handy zuerst, Tab-Leiste unten */
+:root{color-scheme:light;--bg:#f6efe0;--card:#fffdf7;--ink:#1d2547;--navy:#1d2547;--amber:#e8a94a;--red:#d9574a;--green:#3f9d6b;--muted:#5b6280;--line:#1d2547;--soft:#e2d7bf}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Nunito,system-ui,sans-serif;overflow-x:clip;padding-bottom:96px}
+h1,h2{font-family:Anton,Impact,sans-serif;font-weight:400;line-height:1.08;margin:0;letter-spacing:.01em}
+h1{font-size:clamp(34px,9vw,46px);color:var(--ink)}
+a{color:var(--ink);font-weight:800}
+#hdr{background:var(--navy);color:#f6efe0;padding:14px max(4vw,16px)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:640px;margin:auto}
+.logo{font-family:Anton,Impact,sans-serif;font-size:26px;color:var(--amber);font-style:italic;white-space:nowrap}
+.logo b{background:var(--red);color:#fff;font-size:13px;padding:2px 5px;border-radius:4px;margin-left:6px;font-style:normal;vertical-align:middle}
+.who{font-size:13px;text-align:right}
+.who strong{display:block;font-size:15px;color:var(--amber)}
+main{max-width:640px;margin:auto;padding:16px max(4vw,14px)}
+.card{background:var(--card);border:3px solid var(--line);border-radius:16px;box-shadow:5px 5px 0 var(--line);padding:16px;margin-bottom:18px}
+.card h2{font-size:24px;margin-bottom:4px}
+.hero h1{margin-bottom:8px}
+.center{text-align:center}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+.small{font-size:13px;color:var(--muted)}
+.note{background:var(--amber);color:var(--navy);font-weight:800;padding:10px 14px;border-radius:12px;margin-bottom:14px;border:2px solid var(--line)}
+.err{color:var(--red);font-weight:800}
+.warn{color:var(--red);font-weight:900}
+.wk{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.tag{background:var(--amber);color:var(--navy);font-weight:800;font-size:13px;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.tag.sm{font-size:11px;padding:1px 8px}
+.chips{display:flex;gap:8px;margin-bottom:14px;padding-bottom:4px}
+.scroll{overflow-x:auto}
+.chip{flex:none;font:800 14px Nunito,system-ui,sans-serif;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:8px 14px;min-height:40px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--navy);color:var(--amber)}
+.chip:disabled{opacity:.35;cursor:default}
+.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:14px 0 6px}
+.day{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:800;color:var(--muted)}
+.dot{width:100%;max-width:46px;aspect-ratio:1;border-radius:50%;border:3px dashed var(--muted);background:none;cursor:pointer;font:900 18px Nunito,system-ui,sans-serif;color:#fff;display:grid;place-items:center;padding:0}
+.dot.on{background:var(--green);border:3px solid var(--line)}
+.dot.today{border-color:var(--red);border-style:solid}
+.dot.on.today{border-color:var(--line)}
+.dot:disabled{opacity:.3;cursor:default}
+input:not([type=checkbox]):not([type=radio]),textarea{width:100%;font:16px Nunito,system-ui,sans-serif;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);min-height:44px}
+textarea{min-height:76px;resize:vertical}
+textarea.refl{margin-top:8px;flex-basis:100%}
+.l{font-weight:800;font-size:14px;display:block;margin:12px 0 4px}
+.chk{display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:700;cursor:pointer;white-space:nowrap}
+.chk.m0{margin:0}
+.chk input{width:22px;height:22px;accent-color:var(--green);flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font:800 16px Nunito,system-ui,sans-serif;background:var(--red);color:#fff;border:3px solid var(--line);border-radius:12px;padding:10px 18px;box-shadow:3px 3px 0 var(--line);cursor:pointer;min-height:44px;text-align:center}
+.btn.alt{background:var(--card);color:var(--ink)}
+.btn.sm{padding:6px 12px;min-height:38px;font-size:14px;margin-top:6px}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+.lnk{background:none;border:0;padding:4px 0;font:800 14px Nunito,system-ui,sans-serif;color:inherit;text-decoration:underline;cursor:pointer}
+.who .lnk{font-size:12px;color:#cfd3e6}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.row2{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.mt{margin-top:16px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 140px;font:800 14px Nunito,system-ui,sans-serif;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:10px;min-height:44px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--navy);color:var(--amber)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--navy);color:#f6efe0;border-radius:14px;padding:12px;text-align:center;border:3px solid var(--line)}
+.stat b{display:block;font:400 clamp(26px,8vw,36px) Anton,Impact,sans-serif;color:var(--amber)}
+.stat span{font-size:12px;font-weight:700}
+.bar{height:22px;background:#e9dfc8;border:2px solid var(--line);border-radius:99px;overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:var(--amber);border-radius:99px;transition:width .6s}
+.bar.g i{background:var(--green)}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:14px;font-weight:700}
+.bingo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.cell{aspect-ratio:1;border:3px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:800 clamp(11px,3.3vw,15px)/1.25 Nunito,system-ui,sans-serif;padding:6px;cursor:pointer;display:grid;place-items:center;text-align:center}
+.cell.on{background:var(--amber)}
+.cell{hyphens:auto;overflow-wrap:anywhere}
+.cell.star{border-color:var(--red)}
+.banner{background:var(--red);color:#fff;font:400 22px Anton,Impact,sans-serif;text-align:center;padding:10px;border-radius:12px;margin:10px 0;animation:pop .4s}
+@keyframes pop{from{transform:scale(.7)}to{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.banner{animation:none}.bar i{transition:none}}
+.list{list-style:none;padding:0;margin:0}
+.list li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:2px dashed var(--soft)}
+.list li.wrap{flex-wrap:wrap}
+.list li:last-child{border:0}
+.list li.click,tr.click{cursor:pointer}
+.rank{font:400 22px Anton,Impact,sans-serif;width:28px;text-align:center;color:var(--muted);flex:none}
+.me{background:#fbe7c2;border-radius:10px;padding-inline:8px!important}
+.grow{flex:1}
+.pts{font-weight:900;white-space:nowrap}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{border:2px solid var(--line);border-radius:99px;padding:4px 12px;font-size:13px;font-weight:800;background:var(--amber)}
+.badge.off{background:none;color:var(--muted);border-style:dashed}
+.goal{display:flex;gap:10px;align-items:center;font-weight:700;padding:6px 0}
+.goal i{width:24px;height:24px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:14px;flex:none}
+.goal i.y{background:var(--green);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 5px;text-align:left;border-bottom:2px dashed var(--soft);vertical-align:top}
+th{font-size:12px;color:var(--muted)}
+td.n{text-align:right;white-space:nowrap}
+.mt-t{min-width:440px}
+tr.dim td{opacity:.5}
+.detail{flex-basis:100%;background:#fbf3e2;border-radius:10px;padding:4px 12px 8px;cursor:default}
+.chk.wrapok{white-space:normal}
+li.dim{opacity:.55}
+.meets{display:flex;gap:14px;flex-wrap:wrap}
+.refltxt{font-size:14px;margin:4px 0;white-space:normal}
+.code{font-family:ui-monospace,Menlo,monospace;background:#fbe7c2;padding:2px 8px;border-radius:6px;letter-spacing:.04em}
+.links{display:flex;flex-direction:column;gap:8px}
+.links a{border:2px solid var(--line);border-radius:10px;padding:10px 12px;text-decoration:none;background:var(--card)}
+#nav{position:fixed;bottom:0;left:0;right:0;background:var(--navy);display:grid;grid-template-columns:repeat(4,1fr);z-index:5;padding-bottom:env(safe-area-inset-bottom)}
+#nav:not(:empty){border-top:3px solid var(--amber)}
+#nav button{background:none;border:0;color:#cfd3e6;font:800 12px Nunito,system-ui,sans-serif;padding:10px 2px 12px;cursor:pointer;min-height:58px}
+#nav button svg{display:block;margin:0 auto 3px;width:22px;height:22px}
+#nav button[aria-selected=true]{color:var(--amber)}
+.status{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:var(--navy);color:#fff;font-weight:800;font-size:13px;padding:8px 14px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9;max-width:92vw;text-align:center}
+.status.show{opacity:1}
+.status.retry{background:var(--red);pointer-events:auto;cursor:pointer}
+.overlay{position:fixed;inset:0;background:rgba(29,37,71,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:640px;max-height:92vh;overflow-y:auto;border-radius:18px 18px 0 0;border:3px solid var(--line);padding:18px 16px 28px}
+.x{background:none;border:0;font-size:32px;line-height:1;cursor:pointer;color:var(--ink);min-width:44px;min-height:44px}
+.q{border:0;padding:0;margin:16px 0}
+.q legend{font-weight:900;margin-bottom:6px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--soft);border-radius:10px;padding:10px;margin:6px 0;cursor:pointer;font-weight:700}
+.opt input{margin-top:3px;width:20px;height:20px;flex:none;accent-color:var(--navy)}
+.opt.right{border-color:var(--green);background:#e3f3ea}
+.opt.wrong{border-color:var(--red);background:#fbe4e1}
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>BENİM YOLUM</h1>
-  <div class="k">Güzel Ahlak Yolunda · Berlin</div>
-  <p>Hier entsteht gerade deine Seite für die Kampagne: Tatenkalender, Buch, Kesitler, Tages-Bingo und Gruppen-Rangliste.</p>
-  <p><b>Bald geht's los, inşallah!</b></p>
-  <a href="https://dotoku.app">Bis dahin: DOTOKU lesen ›</a>
-</div>
+<header id="hdr"></header>
+<main id="main"></main>
+<nav id="nav"></nav>
+<div id="status" class="status" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
+<script>
+// ===== Gemeinsame Logik (Seite und Google-Skript nutzen genau dieselbe) =====
+var BY = {
+  WEEKS: 6, DAYS: 42, SECTIONS: 8, KESIT: 6, MEET: 7,
+  P: { day: 10, week7: 20, hayir: 15, saetze: 5, sec: 40, quiz: 10, kesit: 15, manga: 5, meet: 20, bingo: 5, superbingo: 15 },
+  LINES: [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]],
+
+  lines: function (b) {
+    if (!b) return 0;
+    var n = 0;
+    for (var i = 0; i < BY.LINES.length; i++) {
+      var l = BY.LINES[i];
+      if (b[l[0]] && b[l[1]] && b[l[2]]) n++;
+    }
+    return n;
+  },
+  full: function (b) {
+    if (!b) return false;
+    for (var i = 0; i < 9; i++) if (!b[i]) return false;
+    return true;
+  },
+  // Tage zwischen zwei "yyyy-mm-dd"
+  diff: function (a, b) {
+    var pa = a.split('-'), pb = b.split('-');
+    return Math.round((Date.UTC(+pb[0], pb[1] - 1, +pb[2]) - Date.UTC(+pa[0], pa[1] - 1, +pa[2])) / 864e5);
+  },
+  addDays: function (iso, n) {
+    var p = iso.split('-');
+    var d = new Date(Date.UTC(+p[0], p[1] - 1, +p[2] + n));
+    return d.getUTCFullYear() + '-' + ('0' + (d.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + d.getUTCDate()).slice(-2);
+  },
+  dayDone: function (st, i) {
+    var w = st && st.w && st.w[Math.floor(i / 7) + 1];
+    return !!(w && w.d && w.d[i % 7]);
+  },
+  // Zusammenfassung einer Schülerin. ctx = {start, today, book}
+  summary: function (st, meet, ctx) {
+    st = st || {};
+    var P = BY.P, pts = 0, days = 0, k, i;
+    var ti = BY.diff(ctx.start, ctx.today);           // Index von heute (0 = erster Tag)
+    var soFar = Math.max(0, Math.min(BY.DAYS, ti + 1));
+    for (k = 1; k <= BY.WEEKS; k++) {
+      var w = (st.w && st.w[k]) || {};
+      var c = 0;
+      for (i = 0; i < 7; i++) if (w.d && w.d[i]) c++;
+      days += c;
+      pts += c * P.day + (c === 7 ? P.week7 : 0);
+      if (w.hd) pts += P.hayir;
+      if (w.s2 && String(w.s2).trim().length >= 5) pts += P.saetze;
+    }
+    var sec = 0, q = 0;
+    for (i = 0; i < BY.SECTIONS; i++) {
+      if (st.sec && st.sec[i]) sec++;
+      if (ctx.book === 'de') { if (st.refl && st.refl[i] && String(st.refl[i]).trim().length >= 10) q++; }
+      else if (st.quiz && st.quiz[i]) q++;
+    }
+    pts += sec * P.sec + q * P.quiz;
+    var kes = 0;
+    for (i = 0; i < BY.KESIT; i++) if (st.kes && st.kes[i]) kes++;
+    pts += kes * P.kesit;
+    var man = 0;
+    if (st.man) for (k in st.man) if (st.man[k]) man++;
+    pts += man * P.manga;
+    var m = 0;
+    for (i = 0; i < BY.MEET; i++) if (meet && meet[i]) m++;
+    pts += m * P.meet;
+    var bingoDays = 0, bingoToday = 0;
+    if (st.bingo) for (k in st.bingo) {
+      var b = st.bingo[k];
+      if (BY.lines(b) > 0) { pts += P.bingo; bingoDays++; if (k === ctx.today) bingoToday = 1; }
+      if (BY.full(b)) pts += P.superbingo;
+    }
+    // Serie: Tage am Stück bis heute (heute darf noch offen sein)
+    var streak = 0;
+    if (ti >= 0) {
+      var j = Math.min(ti, BY.DAYS - 1);
+      if (ti < BY.DAYS && !BY.dayDone(st, j)) j--;
+      while (j >= 0 && BY.dayDone(st, j)) { streak++; j--; }
+    }
+    // Auf Kurs: alle vergangenen Tage erledigt
+    var past = Math.max(0, Math.min(BY.DAYS, ti)), onCourse = true;
+    for (i = 0; i < past; i++) if (!BY.dayDone(st, i)) { onCourse = false; break; }
+    var goal = days === BY.DAYS && sec === BY.SECTIONS && kes === BY.KESIT && m === BY.MEET;
+    return { pts: pts, days: days, soFar: soFar, streak: streak, onCourse: onCourse, sec: sec, q: q, kes: kes, man: man, meet: m, goal: goal, bingoDays: bingoDays, bingoToday: bingoToday, level: 1 + Math.floor(pts / 250) };
+  }
+};
+
+// ===== Inhalte (Wochen, Buch, Quizze, Bingo, Gruppennamen) =====
+var WEEKS = [
+  { t: 'Fabrika ayarın ne?', idea: 'Zu Hause mit anpacken' },
+  { t: 'Aynam kim?', idea: 'Jedem richtig zuhören' },
+  { t: 'Kalbimi ne tıkıyor?', idea: 'Dich entschuldigen' },
+  { t: 'Bir kelime yeter', idea: 'Nur freundliche Worte' },
+  { t: 'Sahne senin mi?', idea: 'Andere loben' },
+  { t: 'Direksiyonda kim var?', idea: 'Ruhig bleiben' }
+];
+
+var SECTIONS = [
+  { t: 'Niçin Güzel Ahlâk Sahibi Olmalıyız?', a: 9, b: 22 },
+  { t: 'Anne Baba Hakkı', a: 23, b: 62 },
+  { t: 'Dostluk ve Arkadaşlık', a: 63, b: 88 },
+  { t: 'Yardımlaşma', a: 89, b: 116 },
+  { t: 'Doğruluk, Dürüstlük, Sözünde Durma', a: 117, b: 156 },
+  { t: 'Âdâb-ı Muâşeret', a: 157, b: 196 },
+  { t: 'Ek 1 · Kitap Okumanın Önemi', a: 197, b: 244 },
+  { t: 'Ek 2 · Tarih Şuuru', a: 245, b: 259 }
+];
+
+// Eigene Fragen zum Inhalt (nicht die "Sorular" aus dem Buch). c = Index der richtigen Antwort, p = Seite
+var QUIZ = [
+  [
+    { q: 'Hadise göre güzel ahlâk günahlara ne yapar?', o: ['Onları gizler', 'Güneşin kırağıyı erittiği gibi onları eritir', 'Onları ikiye katlar', 'Hiçbir etkisi yoktur'], c: 1, p: 11 },
+    { q: 'Kötü ahlâk güzel amelleri, neyin balı bozduğu gibi bozar?', o: ['Tuzun', 'Sirkenin', 'Suyun', 'Ateşin'], c: 1, p: 12 },
+    { q: 'Efendimiz kendisini hangi üç şeyden men etmişti?', o: ['Uyku, yemek ve gülmekten', 'Münakaşa, mübalağa ve gereksiz konuşmadan', 'Ticaret, yolculuk ve şiirden', 'Hediye, ziyafet ve sohbetten'], c: 1, p: 13 },
+    { q: 'Hadise göre hediyeleşmek kalpteki neyi yok eder?', o: ['Kin ve nefreti', 'Korkuyu', 'Üzüntüyü', 'Unutkanlığı'], c: 0, p: 14 },
+    { q: 'Hz. Bilal’in müezzinliğin yanında bir görevi daha vardı. Neydi?', o: ['Ordu komutanlığı', 'Ziyaretçiler ve ihtiyaç sahipleriyle ilgilenmek', 'Kur’an sayfalarını yazmak', 'Pazarı denetlemek'], c: 1, p: 15 }
+  ],
+  [
+    { q: 'Hadiste anne-baba cennetin hangi kapısı olarak anılır?', o: ['İlk kapısı', 'Orta kapısı', 'Son kapısı', 'Gizli kapısı'], c: 1, p: 23 },
+    { q: 'Âyette anne-babaya yapılması emredilen “ihsan” aynı zamanda ne demektir?', o: ['Allah’ı görüyormuş gibi davranmak', 'Sadece para vermek', 'Sadece selam vermek', 'Uzaktan dua etmek'], c: 0, p: 25 },
+    { q: '“En çok kiminle vakit geçirmeliyim?” diye soran sahabiye Efendimiz kaç kez “Annen” dedi?', o: ['Bir', 'İki', 'Üç', 'Dört'], c: 2, p: 32 },
+    { q: '“Hesap günü beni, anne-babamı ve müminleri bağışla” diye dua eden peygamber kimdir?', o: ['Hz. Musa', 'Hz. İbrahim', 'Hz. Nuh', 'Hz. İsa'], c: 1, p: 27 },
+    { q: 'Bir âyete göre Allah, kendisine şükretmemizle birlikte kime de şükretmemizi ister?', o: ['Öğretmenlerimize', 'Anne ve babamıza', 'Komşularımıza', 'Arkadaşlarımıza'], c: 1, p: 52 }
+  ],
+  [
+    { q: 'Kur’an’da “dost” anlamında en çok geçen kelime hangisidir?', o: ['Velî', 'Habîb', 'Refîk', 'Sadîk'], c: 0, p: 64 },
+    { q: 'Kitaba göre Allah kimlerin dostudur?', o: ['Zengin olanların', 'İman edip salih amel işleyen, takva sahibi kulların', 'Sadece âlimlerin', 'Herkesin aynı şekilde'], c: 1, p: 71 },
+    { q: 'İmam Şârânî, namaz kılmayanlarla oturup kalktığında ne fark etmişti?', o: ['Duygularının köreldiğini', 'Daha çok güldüğünü', 'Daha çok kitap okuduğunu', 'Hiçbir şey değişmediğini'], c: 0, p: 73 },
+    { q: 'İyi bir dost olmak için verilen ilk tavsiye nedir?', o: ['Çok hediye almak', 'Lüzumsuz tenkit ve kırıcı sözlerden kaçınmak', 'Her gün buluşmak', 'Hep haklı çıkmak'], c: 1, p: 77 },
+    { q: 'Bir âyete göre ahirette, kimler dışındaki dostlar birbirine düşman olur?', o: ['Akrabalar', 'Müttakîler (takva sahipleri)', 'Komşular', 'Çocukluk arkadaşları'], c: 1, p: 81 }
+  ],
+  [
+    { q: 'Allah yolunda harcanan mal âyette neye benzetilir?', o: ['Yedi başak bitiren, her başağında yüz tane olan bir tohuma', 'Akan bir nehre', 'Sağlam bir eve', 'Parlayan bir yıldıza'], c: 0, p: 99 },
+    { q: 'Şeyh Sâdî’ye göre biriktirilip paylaşılmayan para neye benzer?', o: ['Durup kokan suya', 'Kuru toprağa', 'Sönmüş ateşe', 'Boş bir kaba'], c: 0, p: 99 },
+    { q: 'Malını defalarca infak edip her defasında yeniden servet sahibi olan sahabi kimdir?', o: ['Hz. Ebû Bekir', 'Hz. Bilal', 'Hz. Enes', 'Hz. Muaz'], c: 0, p: 98 },
+    { q: '“Veren el alan elden üstündür” hadisi toplumda neye vesile olur?', o: ['Fazilet yarışına', 'Kıskançlığa', 'Tembelliğe', 'Kavgaya'], c: 0, p: 101 },
+    { q: 'Yardım yaparken dikkat edilmesi gereken ilk husus nedir?', o: ['Herkesin görmesi', 'Allah rızası için yapılması', 'Çok para olması', 'Karşılık beklenmesi'], c: 1, p: 110 }
+  ],
+  [
+    { q: 'Sadakatin zıddı nedir?', o: ['Hıyanet', 'Cömertlik', 'Sabır', 'Tevazu'], c: 0, p: 117 },
+    { q: 'Doğruluk hangi üç alanda gerçekleşir?', o: ['Söz, düşünce ve davranışta', 'Okul, ev ve camide', 'Sabah, öğle ve akşamda', 'Para, iş ve oyunda'], c: 0, p: 117 },
+    { q: 'Fatiha sûresini namazlarda günde en az kaç defa okuruz?', o: ['5', '17', '40', '100'], c: 2, p: 118 },
+    { q: 'Kâbe tamirindeki Hacerü’l-Esved tartışmasında hakem olan Efendimiz o zaman hangi lakapla biliniyordu?', o: ['el-Emîn (güvenilir)', 'el-Fârûk', 'es-Sıddîk', 'Seyfullah'], c: 0, p: 119 },
+    { q: 'Abdullah b. Âmir ve annesinin hikâyesi bize ne öğretir?', o: ['Çocuklara şakayla bile olsa yalan söylenmemeli', 'Çocuklar hediye istememeli', 'Misafir gelince susulmalı', 'Sadece büyüklere doğru söylenir'], c: 0, p: 134 }
+  ],
+  [
+    { q: '“Hilim” ne demektir?', o: ['Yumuşak huylu olmak ve öfkeyi yenmek', 'Çok konuşmak', 'Hızlı karar vermek', 'Zengin olmak'], c: 0, p: 159 },
+    { q: 'Selam vermek sünnettir. Selamı almak nedir?', o: ['Mubah', 'Farz', 'Mekruh', 'Müstehap'], c: 1, p: 168 },
+    { q: 'Hapşıran “Elhamdülillah” deyince yanındaki ne der?', o: ['Yerhamükâllah', 'Maşallah', 'İnşallah', 'Bismillah'], c: 0, p: 170 },
+    { q: 'Efendimiz, yemek yiyen küçük Ömer b. Ebî Seleme’ye ne tavsiye etti?', o: ['Hızlı ye', 'Besmele çek, sağ elinle ve önünden ye', 'Ayakta ye', 'Konuşarak ye'], c: 1, p: 171 },
+    { q: 'Efendimiz ashabını ilk olarak nerede yaptığı sohbetlerle yetiştirdi?', o: ['Dâru’l-Erkam’da', 'Taif’te', 'Hudeybiye’de', 'Kuba’da'], c: 0, p: 186 }
+  ],
+  [
+    { q: 'Kitaba göre Kur’an’da “ilim” kelimesi ve türevleri kaç kez geçer?', o: ['87', '336', '780', '1000'], c: 2, p: 199 },
+    { q: 'Hadise göre ahirette âlimlerin mürekkebi neyle tartılır?', o: ['Altınla', 'Şehitlerin kanıyla', 'Dağlarla', 'Yıldızlarla'], c: 1, p: 201 },
+    { q: '“Kitaplarla yaşadım, kitaplarla huzuru buldum” diyen düşünür kimdir?', o: ['Cemil Meriç', 'Henry Ford', 'Benjamin Franklin', 'Şeyh Sâdî'], c: 0, p: 218 },
+    { q: 'Orta Çağ Avrupa kütüphanelerinde kitaplar nasıl saklanırdı?', o: ['Raflara zincirlerle bağlanırdı', 'Herkese ödünç verilirdi', 'Bahçede okunurdu', 'Hiç kitap yoktu'], c: 0, p: 219 },
+    { q: 'Kitaba göre insanın zekâsını ölçen en keskin kriter nedir?', o: ['Kelime hazinesi', 'Boy uzunluğu', 'Okul notu', 'Uyku süresi'], c: 0, p: 240 }
+  ],
+  [
+    { q: 'Kitaba göre bir toplumu değişen dünya karşısında ayakta tutan nedir?', o: ['Tarih şuuru', 'Moda', 'Zenginlik', 'Teknoloji'], c: 0, p: 245 },
+    { q: 'Tarih şuurundan yoksun toplumlar için ne söylenir?', o: ['Kendileri olamaz, hep başkalarından etkilenirler', 'Daha mutlu olurlar', 'Daha hızlı gelişirler', 'Hiç değişmezler'], c: 0, p: 246 },
+    { q: 'Kitapta alıntılanan “Ben kökü mâzide olan bir âtiyim” sözü kime aittir?', o: ['Yahya Kemal', 'Mehmet Âkif', 'Yunus Emre', 'Cemil Meriç'], c: 0, p: 256 }
+  ]
+];
+
+var BINGO_POOL = [
+  'Lies einen Vers und seine Bedeutung', 'Sag Mama oder Papa „Allah razı olsun“ (Danke)', '1 Stunde ohne Handy', 'Heute über niemanden lästern',
+  'Trink Wasser mit Bismillah', 'Schreib einer Freundin „Wie geht’s dir?“', '2 Seiten im Buch lesen', 'Räum 5 Minuten dein Zimmer auf',
+  'Deck den Tisch', 'Räum die Spülmaschine aus', 'Ruf Oma oder Opa an', '33× Tesbih nach einem Gebet', 'Lern ein kurzes Dua auswendig',
+  'Hilf deinen Geschwistern', 'Sag „Danke“ zu jemandem, der es nicht erwartet', '15 Minuten ohne Bildschirm', 'Grüß zuerst mit Selam',
+  'Bring den Müll raus', 'Besmele beim Essen', 'Setz dich zu jemandem, der allein ist', 'Lies die neue DOTOKU-Folge', 'Schau einen Kesit',
+  'Mach Dua für eine Freundin', 'Lass jemanden ausreden', 'Sag heute nichts Schlechtes über dich', 'Mach dein Bett', 'Teil dein Essen mit jemandem',
+  'Schreib auf, wofür du heute dankbar bist', 'Hilf beim Kochen', 'Lächle jemanden an'
+];
+var BINGO_STAR = ['Hilf zu Hause, ohne dass man fragt', 'Hör heute jemandem richtig zu', 'Sag jemandem ehrlich „Entschuldigung“', 'Heute nur freundliche Worte', 'Lob heute jemanden – nicht dich', 'Bleib ruhig, wenn dich etwas ärgert'];
+
+var VIRTUE = {
+  'Sadakat': 'Treue und Aufrichtigkeit – zu seinem Wort und zu anderen stehen.',
+  'Vefa': 'Treue – Freundschaft und Versprechen halten, auch wenn es schwer wird.',
+  'Sabır': 'Geduld – dranbleiben und nicht aufgeben.',
+  'Tevazu': 'Bescheidenheit – sich nicht über andere stellen.',
+  'Merhamet': 'Barmherzigkeit – mitfühlen und helfen.',
+  'Hilm': 'Sanftmut – den Ärger beherrschen und ruhig bleiben.',
+  'Edep': 'Gutes Benehmen und Anstand.',
+  'Şükür': 'Dankbarkeit – für das Kleine und das Große.',
+  'İhlas': 'Aufrichtigkeit – Gutes nur für Allah tun, nicht zum Angeben.',
+  'Emanet': 'Vertrauenswürdigkeit – Anvertrautes gut bewahren.',
+  'Adalet': 'Gerechtigkeit – fair zu allen sein.',
+  'Sehâ': 'Großzügigkeit – gerne geben und teilen.',
+  'Rıfk': 'Freundlichkeit und Sanftheit im Umgang.',
+  'Hayâ': 'Schamgefühl und schöne Zurückhaltung.',
+  'Kanaat': 'Genügsamkeit – zufrieden sein mit dem, was man hat.',
+  'Îsâr': 'Andere sich selbst vorziehen.'
+};
+
+var PTS_TABLE = [
+  ['Tat des Tages gemacht', 'day'], ['Woche 7 von 7 geschafft (Bonus)', 'week7'], ['Hayırhahım erledigt', 'hayir'], ['2 Sätze geschrieben', 'saetze'],
+  ['Buchabschnitt fertig gelesen', 'sec'], ['Quiz gemacht – egal wie viele richtig (dt. Buch: Gedanken geschrieben)', 'quiz'],
+  ['Kesitler der Woche angeschaut', 'kesit'], ['DOTOKU-Folge gelesen', 'manga'], ['Beim Treffen dabei (trägt die Mentorin ein)', 'meet'],
+  ['Tages-Bingo', 'bingo'], ['Süper Bingo (volle Karte)', 'superbingo']
+];
+
+// ===== Benim Yolum – Seite =====
+{
+const API = (window.BY_API || '').trim();
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const LS = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+const todayISO = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+const DN = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+const dm = iso => { const p = iso.split('-'); return (+p[2]) + '.' + (+p[1]) + '.'; };
+
+let S = { mode: 'loading', tab: 'heute', week: 0, cfg: null, me: null, token: null, board: null, boardAt: 0, staff: null, sd: null, group: null, klasse: 'alle', open: null, quiz: null, form: { neu: true, buch: 'tr' }, msg: '', status: '', pinShown: {} };
+let saveTimer = null, saving = false, again = false;
+
+async function api(action, data) {
+  const r = await fetch(API, { method: 'POST', body: JSON.stringify(Object.assign({ action }, data || {})) });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.err || 'Unbekannter Fehler');
+  return j;
+}
+
+// ---------- Hilfsfunktionen für Schülerinnen ----------
+const st = () => S.me.st;
+const ctx = () => ({ start: S.cfg.start, today: todayISO(), book: S.me.buch });
+const tIdx = () => BY.diff(S.cfg.start, todayISO());
+const curWeek = () => Math.max(1, Math.min(6, Math.floor(tIdx() / 7) + 1));
+const wk = k => { const s = st(); s.w = s.w || {}; s.w[k] = s.w[k] || { tat: '', d: [0, 0, 0, 0, 0, 0, 0], hn: '', hd: 0, s2: '' }; return s.w[k]; };
+const summ = () => BY.summary(st(), S.me.treffen, ctx());
+function fix(s) { s.w = s.w || {}; s.sec = s.sec || []; s.quiz = s.quiz || {}; s.refl = s.refl || {}; s.kes = s.kes || []; s.man = s.man || {}; s.bingo = s.bingo || {}; return s; }
+
+function changed(rerender) {
+  LS.set('by-backup', { id: S.me.id, st: st(), buch: S.me.buch, at: Date.now() }); LS.set('by-unsaved', 1);
+  setStatus('Wird gespeichert …');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(flush, 1200);
+  if (rerender) render();
+}
+async function flush() {
+  if (saving) { again = true; return; }
+  saving = true;
+  try {
+    const j = await api('save', { token: S.token, st: st(), buch: S.me.buch });
+    S.me.treffen = j.treffen || S.me.treffen;
+    if (!again) LS.del('by-unsaved');
+    setStatus('Gespeichert ✓', 2000);
+  } catch (e) {
+    if (/anmelden/.test(e.message)) { logout(); return; }
+    setStatus('Nicht gespeichert – hier tippen zum Wiederholen', 0, true);
+  }
+  saving = false;
+  if (again) { again = false; flush(); }
+}
+let statusTimer = null;
+function setStatus(t, hide, retry) {
+  const el = $('#status'); if (!el) return;
+  el.textContent = t; el.className = 'status show' + (retry ? ' retry' : '');
+  el.dataset.act = retry ? 'retry' : '';
+  clearTimeout(statusTimer);
+  if (hide) statusTimer = setTimeout(() => { el.className = 'status'; }, hide);
+}
+
+// ---------- Tages-Bingo: gleiche Karte für alle ----------
+function seedRand(str) { let h = 1779033703 ^ str.length; for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; }; }
+function bingoCard(date) {
+  const r = seedRand('by' + date), pool = BINGO_POOL.slice(), pick = [];
+  while (pick.length < 8) pick.push(pool.splice(Math.floor(r() * pool.length), 1)[0]);
+  pick.splice(4, 0, BINGO_STAR[curWeek() - 1]);
+  return pick;
+}
+
+// ---------- Kalender-Erinnerung ----------
+function icsHref(time) {
+  const [h, m] = (time || '19:00').split(':');
+  const d = todayISO().replace(/-/g, '');
+  const end = (S.cfg.ende || '2026-12-20').replace(/-/g, '');
+  const url = location.origin + location.pathname;
+  const txt = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Benim Yolum//DE', 'BEGIN:VEVENT', 'UID:benimyolum-' + Date.now() + '@guzelahlak', 'DTSTAMP:' + d + 'T000000Z',
+    'DTSTART;TZID=Europe/Berlin:' + d + 'T' + h + m + '00', 'DURATION:PT10M', 'RRULE:FREQ=DAILY;UNTIL=' + end + 'T225959Z',
+    'SUMMARY:Benim Yolum – Tat eingetragen? 🔥', 'DESCRIPTION:Hast du deine Tat heute schon gemacht? ' + url, 'URL:' + url,
+    'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:Benim Yolum', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  return 'data:text/calendar;charset=utf-8,' + encodeURIComponent(txt);
+}
+
+// ---------- Ansichten ----------
+function render() {
+  const h = $('#hdr'), m = $('#main'), n = $('#nav');
+  if (S.mode === 'nocfg') { h.innerHTML = hdr(); m.innerHTML = `<div class="card"><h2>Noch nicht verbunden</h2><p>Die Seite ist noch nicht mit dem Google Sheet verbunden. Trag in der Datei <b>config.js</b> die Web-App-Adresse ein.</p></div>`; n.innerHTML = ''; return; }
+  if (S.mode === 'loading') { h.innerHTML = hdr(); m.innerHTML = `<div class="card center"><p>Einen Moment …</p></div>`; n.innerHTML = ''; return; }
+  if (S.mode === 'start' || S.mode === 'girlLogin' || S.mode === 'staffLogin') { h.innerHTML = hdr(); m.innerHTML = loginView(); n.innerHTML = ''; return; }
+  if (S.mode === 'girl') { h.innerHTML = hdr(); m.innerHTML = notice() + ({ heute: vHeute, lesen: vLesen, ich: vIch, gruppe: vGruppe }[S.tab])() + (S.quiz ? vQuiz() : ''); n.innerHTML = nav(); return; }
+  if (S.mode === 'staff') { h.innerHTML = hdr(); m.innerHTML = notice() + vStaff(); n.innerHTML = ''; return; }
+}
+function notice() { return S.cfg && S.cfg.hinweis ? `<div class="note">${esc(S.cfg.hinweis)}</div>` : ''; }
+function hdr() {
+  let who = '';
+  if (S.mode === 'girl') who = `<div class="who"><strong>${esc(S.me.name)}</strong>Gruppe ${esc(S.me.gname)}</div>`;
+  if (S.mode === 'staff') who = `<div class="who"><strong>${esc(S.staff.label)}</strong><button class="lnk" data-act="logout">Abmelden</button></div>`;
+  return `<div class="top"><div class="logo">BENİM YOLUM<b>道徳</b></div>${who}</div>`;
+}
+function nav() {
+  const T = [['heute', 'Heute', '<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>'], ['lesen', 'Lesen', '<path d="M3 5h7a2 2 0 012 2v12a2 2 0 00-2-2H3zM21 5h-7a2 2 0 00-2 2v12a2 2 0 012-2h7z"/>'], ['ich', 'Ich', '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'], ['gruppe', 'Gruppe', '<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 20c0-3 3-5 6-5s6 2 6 5M14 15c3 0 8 1 8 5"/>']];
+  return T.map(t => `<button data-act="tab" data-v="${t[0]}" aria-selected="${S.tab === t[0]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">${t[2]}</svg>${t[1]}</button>`).join('');
+}
+
+function loginView() {
+  const err = S.msg ? `<p class="err">${esc(S.msg)}</p>` : '';
+  if (S.mode === 'start') return `<div class="card hero"><h1>Güzel Ahlak Yolunda</h1><p>Dein Tatenkalender, dein Buch, Kesitler, Tages-Bingo und eure Gruppen-Rangliste – alles an einem Ort.</p>
+    <p class="row2"><button class="btn" data-act="mode" data-v="girlLogin">Ich bin Schülerin</button><button class="btn alt" data-act="mode" data-v="staffLogin">Ich bin Mentorin / Abla</button></p></div>
+    <p class="small center"><a href="https://dotoku.app" target="_blank" rel="noopener">Zu DOTOKU – Manga, Kesitler und mehr ›</a></p>`;
+  if (S.mode === 'staffLogin') return `<form class="card" data-form="staff"><h2>Anmelden für Mentorinnen</h2><p class="sub">Mit deinem persönlichen Code (bekommst du von deiner Mesul oder Eyalet-Abla).</p>
+    <label class="l" for="scode">Code</label><input id="scode" name="code" autocomplete="off" autocapitalize="characters" required>
+    ${err}<p class="row2"><button class="btn" type="submit">Anmelden</button><button class="btn alt" type="button" data-act="mode" data-v="start">Zurück</button></p></form>`;
+  const f = S.form;
+  return `<form class="card" data-form="girl"><div class="seg"><button type="button" data-act="neu" data-v="1" aria-pressed="${f.neu}">Ich bin neu hier</button><button type="button" data-act="neu" data-v="0" aria-pressed="${!f.neu}">Ich war schon hier</button></div>
+    <label class="l" for="join">Gruppencode <span class="small">(von deiner Mentorin)</span></label><input id="join" name="join" value="${esc(f.join || '')}" autocomplete="off" autocapitalize="characters" required>
+    <label class="l" for="gname">Vorname</label><input id="gname" name="name" value="${esc(f.name || '')}" autocomplete="given-name" maxlength="20" required>
+    <label class="l" for="pin">${f.neu ? 'Wähle eine PIN (4 Ziffern) – merk sie dir gut!' : 'Deine PIN'}</label><input id="pin" name="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" value="${esc(f.pin || '')}" required>
+    ${f.neu ? `<p class="l">Welches Buch liest du?</p><div class="seg"><button type="button" data-act="buch" data-v="tr" aria-pressed="${f.buch === 'tr'}">Güzel Ahlâk Sahibi Olmak (Türkisch)</button><button type="button" data-act="buch" data-v="de" aria-pressed="${f.buch === 'de'}">Der edle Charakter Muhammeds (Deutsch)</button></div>` : ''}
+    ${err}<p class="row2"><button class="btn" type="submit">${f.neu ? 'Los geht’s' : 'Anmelden'}</button><button class="btn alt" type="button" data-act="mode" data-v="start">Zurück</button></p>
+    <p class="small">Wir speichern nur deinen Vornamen, deine Gruppe und was du einträgst. PIN vergessen? Deine Mentorin kann dir eine neue geben.</p></form>`;
+}
+
+// ----- Heute -----
+function vHeute() {
+  const ti = tIdx(), cw = curWeek(), k = S.week || cw, w = wk(k), today = todayISO();
+  if (ti < 0) return `<div class="card"><h2>Bald geht’s los!</h2><p>Die Kampagne startet am ${dm(S.cfg.start)}. Bis dahin: <a href="https://dotoku.app" target="_blank" rel="noopener">DOTOKU lesen</a>.</p></div>`;
+  const chips = WEEKS.map((x, i) => `<button class="chip" data-act="week" data-k="${i + 1}" aria-pressed="${k === i + 1}" ${i + 1 > cw ? 'disabled' : ''}>Woche ${i + 1}</button>`).join('');
+  const start = BY.addDays(S.cfg.start, (k - 1) * 7);
+  const days = DN.map((d, j) => { const date = BY.addDays(start, j), on = w.d[j], fut = date > today;
+    return `<div class="day">${d}<button class="dot${on ? ' on' : ''}${date === today ? ' today' : ''}" data-act="day" data-j="${j}" ${fut ? 'disabled' : ''} aria-label="${d} ${dm(date)} ${on ? 'erledigt' : 'offen'}">${on ? '✓' : ''}</button>${dm(date)}</div>`; }).join('');
+  const ended = ti >= BY.DAYS;
+  let out = `<div class="chips scroll">${chips}</div>
+  <div class="card"><div class="wk"><h2>Woche ${k} · ${esc(WEEKS[k - 1].t)}</h2><span class="tag">Tat-Idee: ${esc(WEEKS[k - 1].idea)}</span></div>
+    <p class="sub">${dm(start)} – ${dm(BY.addDays(start, 6))}${k < cw ? ' · vergangene Tage kannst du nachtragen' : ''}</p>
+    <label class="l" for="tat">Meine Tat der Woche (jeden Tag)</label><input id="tat" data-field="tat" value="${esc(w.tat)}" maxlength="120" placeholder="z. B. ${esc(WEEKS[k - 1].idea)}">
+    <div class="days">${days}</div><p class="small">Tippe auf den Kreis, wenn du deine Tat an dem Tag gemacht hast.</p></div>
+  <div class="card"><h2>Hayırhahım</h2><p class="sub">Für wen du diese Woche heimlich etwas Gutes tust. Das siehst nur du – deine Mentorin sieht es nicht.</p>
+    <input id="hn" data-field="hn" value="${esc(w.hn)}" maxlength="40" placeholder="Name aus dem Topf">
+    <label class="chk"><input type="checkbox" data-act="hd" ${w.hd ? 'checked' : ''}> erledigt</label>
+    <label class="l" for="s2">Meine 2 Sätze – Was habe ich versucht? Was war schwer?</label><textarea id="s2" data-field="s2" maxlength="400">${esc(w.s2)}</textarea></div>`;
+  if (!ended) {
+    const card = bingoCard(today), b = st().bingo[today] || [], n = BY.lines(b), full = BY.full(b);
+    out += `<div class="card"><h2>Tages-Bingo</h2><p class="sub">Für alle machbar. Eine Reihe = Bingo, volle Karte = Süper Bingo. Jeden Morgen eine neue Karte.</p>
+    <div class="bingo">${card.map((t, i) => `<button class="cell${b[i] ? ' on' : ''}${i === 4 ? ' star' : ''}" data-act="bingo" data-i="${i}">${esc(t)}</button>`).join('')}</div>
+    ${n ? `<div class="banner">${full ? 'SÜPER BINGO! ⭐' : 'BINGO! 🎉'}</div>` : ''}
+    <p class="small">${S.board ? `Heute haben schon ${Math.max(0, S.board.bingoToday)} Mädchen Bingo gemacht.` : ''}</p></div>`;
+  }
+  out += `<div class="card"><h2>Tägliche Erinnerung</h2><p class="sub">Leg dir einen Termin in deinen Handy-Kalender – jeden Tag zur gleichen Zeit bis zum ${dm(S.cfg.ende || '2026-12-20')}.</p>
+    <div class="row2"><input type="time" id="remtime" value="${esc(st().rem || '19:00')}" style="max-width:140px"><a class="btn" id="icslink" href="${icsHref(st().rem)}" download="benim-yolum-erinnerung.ics">Zum Kalender hinzufügen</a></div></div>`;
+  return out;
+}
+
+// ----- Lesen -----
+function vLesen() {
+  const s = st(), today = todayISO(), de = S.me.buch === 'de';
+  let book;
+  if (!de) {
+    const pages = SECTIONS.reduce((a, x, i) => a + (s.sec[i] ? x.b - x.a + 1 : 0), 0), pc = Math.round(pages / 251 * 100);
+    book = `<div class="card"><h2>Mein Buch</h2><p class="sub">Güzel Ahlâk Sahibi Olmak · 6 Kapitel und 2 Ergänzungen. Nach jedem Teil wartet ein kleines Quiz.</p>
+      <div class="row"><span>${s.sec.filter(Boolean).length} von 8 Teilen gelesen</span><span>${pc} %</span></div><div class="bar g"><i style="width:${pc}%"></i></div>
+      <ul class="list">${SECTIONS.map((x, i) => `<li><span class="rank">${i < 6 ? i + 1 : '+'}</span><span class="grow"><b>${esc(x.t)}</b><br><span class="small">S. ${x.a}–${x.b}</span>${s.sec[i] ? `<br><button class="btn sm ${s.quiz[i] ? 'alt' : ''}" data-act="quiz" data-i="${i}">${s.quiz[i] ? 'Quiz gemacht ✓ – ansehen' : 'Quiz starten (' + QUIZ[i].length + ' Fragen)'}</button>` : ''}</span><label class="chk m0"><input type="checkbox" data-act="sec" data-i="${i}" ${s.sec[i] ? 'checked' : ''}> gelesen</label></li>`).join('')}</ul></div>`;
+  } else {
+    const N = S.cfg.deBuchSeiten, per = N ? Math.ceil(N / 8) : 0, cnt = s.sec.filter(Boolean).length, pc = Math.round(cnt / 8 * 100);
+    book = `<div class="card"><h2>Mein Buch</h2><p class="sub">Der edle Charakter Muhammeds · in 8 Etappen. Nach jeder Etappe schreibst du kurz auf, was du mitnimmst.</p>
+      <div class="row"><span>${cnt} von 8 Etappen gelesen</span><span>${pc} %</span></div><div class="bar g"><i style="width:${pc}%"></i></div>
+      <ul class="list">${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<li class="wrap"><span class="rank">${i + 1}</span><span class="grow"><b>Etappe ${i + 1}</b><br><span class="small">${per ? 'S. ' + (i * per + 1) + '–' + Math.min(N, (i + 1) * per) : 'ca. ein Achtel des Buchs'}</span></span><label class="chk m0"><input type="checkbox" data-act="sec" data-i="${i}" ${s.sec[i] ? 'checked' : ''}> gelesen</label>
+        ${s.sec[i] ? `<textarea class="refl" data-field="refl" data-i="${i}" maxlength="500" placeholder="Was nimmst du aus dieser Etappe mit? (1–2 Sätze)">${esc(s.refl[i] || '')}</textarea>` : ''}</li>`).join('')}</ul></div>`;
+  }
+  const kes = (S.cfg.kes || []).slice(0, 6).map((x, i) => { const open = today >= BY.addDays(S.cfg.start, i * 7 - 3);
+    return `<li><span class="rank">${i + 1}</span><span class="grow"><b>${esc(WEEKS[i].t)}</b><br><span class="small">${open ? `${esc(x.anzahl)} kurze Kesitler · ca. ${esc(x.minuten)} Min. · <a href="${esc(x.link)}" target="_blank" rel="noopener">ansehen</a>` : 'Wird vor Woche ' + (i + 1) + ' freigeschaltet'}</span></span><label class="chk m0"><input type="checkbox" data-act="kes" data-i="${i}" ${s.kes[i] ? 'checked' : ''} ${open ? '' : 'disabled'}> gesehen</label></li>`; }).join('');
+  const mg = (S.cfg.manga || []).filter(x => x.nr).map(x => { const out = x.datum && x.datum <= today;
+    return `<li><span class="rank">${esc(x.nr)}</span><span class="grow"><b>${esc(x.titel)}</b><br><span class="small">${out ? `<a href="${esc(x.link || 'https://dotoku.app')}" target="_blank" rel="noopener">lesen</a>` : 'erscheint am ' + (x.datum ? dm(x.datum) : 'bald')}</span></span>${out ? `<label class="chk m0"><input type="checkbox" data-act="man" data-n="${esc(x.nr)}" ${s.man[x.nr] ? 'checked' : ''}> gelesen</label>` : ''}</li>`; }).join('');
+  const cw = String(curWeek());
+  const vid = (S.cfg.vid || []).filter(v => v.link && (!v.woche || v.woche === cw)).map(v => `<a href="${esc(v.link)}" target="_blank" rel="noopener">${esc(v.titel)}${/fort/i.test(v.stufe) ? ' <span class="tag sm">für Fortgeschrittene</span>' : ''}</a>`).join('');
+  return book + `<div class="card"><h2>Kesitler der Woche</h2><p class="sub">Ahlâkî Mülâhazalar – jede Woche ein paar kurze Kesitler, die ihr auch in der Rehberlik schaut. Verpasst? Hier nachholen.</p><ul class="list">${kes}</ul></div>
+    <div class="card"><h2>DOTOKU-Manga</h2><p class="sub">Die Geschichte von Yusuf und Zeynep – jeden Mittwoch eine neue Folge.</p><ul class="list">${mg}</ul></div>
+    ${vid ? `<div class="card"><h2>Mehr zum Anschauen</h2><p class="sub">Ausgewählt von deinen Ablas.</p><div class="links">${vid}</div></div>` : ''}`;
+}
+
+// ----- Quiz -----
+function vQuiz() {
+  const i = S.quiz.i, Q = QUIZ[i], done = st().quiz[i];
+  const ans = done ? done.a : S.quiz.a;
+  const body = Q.map((q, n) => `<fieldset class="q"><legend>${n + 1}. ${esc(q.q)}</legend>${q.o.map((o, m) => {
+    let cls = '';
+    if (done) cls = m === q.c ? ' right' : (ans[n] === m ? ' wrong' : '');
+    return `<label class="opt${cls}"><input type="radio" name="q${n}" data-act="qa" data-n="${n}" data-m="${m}" ${ans[n] === m ? 'checked' : ''} ${done ? 'disabled' : ''}> ${esc(o)}</label>`; }).join('')}
+    ${done ? `<p class="small">Steht auf S. ${q.p}</p>` : ''}</fieldset>`).join('');
+  const all = Q.every((q, n) => ans[n] !== undefined && ans[n] !== null);
+  return `<div class="overlay" role="dialog" aria-modal="true" aria-label="Quiz"><div class="sheet"><div class="wk"><h2>Quiz · ${esc(SECTIONS[i].t)}</h2><button class="x" data-act="qclose" aria-label="Schließen">×</button></div>
+    ${done ? `<div class="banner">${done.s} von ${Q.length} richtig · +${BY.P.quiz} Punkte fürs Mitmachen</div>` : `<p class="sub">Du kannst das Quiz nur einmal machen. Punkte gibt es fürs Mitmachen – nicht fürs Richtig-haben. Danach siehst du die Lösungen mit Seitenzahl.</p>`}
+    ${body}${done ? `<button class="btn" data-act="qclose">Fertig</button>` : `<button class="btn" data-act="qsend" ${all ? '' : 'disabled'}>Abgeben</button>`}</div></div>`;
+}
+
+// ----- Ich -----
+function vIch() {
+  const su = summ(), s = st();
+  const G = [[`An allen 42 Tagen die Tat der Woche gemacht`, `${su.days} von ${su.soFar} Tagen bisher`, su.days === 42], [S.me.buch === 'de' ? 'Das ganze Buch gelesen' : 'Das ganze Buch gelesen', `${su.sec} von 8 Teilen`, su.sec === 8], ['Alle Kesitler angesehen', `${su.kes} von 6 Wochen`, su.kes === 6], ['Bei allen 7 Treffen dabei', `${su.meet} von 7 Stempeln`, su.meet === 7]];
+  const B = [['Erste Woche 7/7', (s.w[1] && s.w[1].d.every(Boolean))], ['7 Tage am Stück', su.streak >= 7], ['14 Tage am Stück', su.streak >= 14], ['21 Tage am Stück', su.streak >= 21], ['Erster Buchteil', su.sec >= 1], ['Halbes Buch', su.sec >= 4], ['Ganzes Buch', su.sec === 8], ['Erstes Quiz', su.q >= 1], ['Erstes Bingo', su.bingoDays >= 1], ['5× Bingo', su.bingoDays >= 5], ['Alle Kesitler', su.kes === 6], ['Manga-Fan (5 Folgen)', su.man >= 5]];
+  return `<div class="stats"><div class="stat"><b>${su.pts}</b><span>Punkte</span></div><div class="stat"><b>${su.streak}</b><span>Tage am Stück</span></div><div class="stat"><b>${su.level}</b><span>Level</span></div></div>
+  <div class="card mt"><h2>Mein Ziel bis zum Finale</h2><p class="sub">Nur wenn alle vier erfüllt sind, gibt es beim Finale dein Geschenk.</p>${G.map(g => `<div class="goal"><i class="${g[2] ? 'y' : ''}">${g[2] ? '✓' : ''}</i><span class="grow">${g[0]}<br><span class="small">${g[1]}</span></span></div>`).join('')}</div>
+  <div class="card"><h2>Abzeichen</h2><div class="badges">${B.map(b => `<span class="badge${b[1] ? '' : ' off'}">${b[0]}</span>`).join('')}</div></div>
+  <div class="card"><h2>So gibt es Punkte</h2><table><tbody>${PTS_TABLE.map(r => `<tr><td>${r[0]}</td><td class="n">${BY.P[r[1]]} P.</td></tr>`).join('')}</tbody></table><p class="small">Deine Punkte siehst nur du und deine Mentorin. In der Rangliste zählt der Durchschnitt eurer Gruppe.</p></div>
+  <div class="card"><h2>Einstellungen</h2><p class="l">Mein Buch</p><div class="seg"><button data-act="setbuch" data-v="tr" aria-pressed="${S.me.buch === 'tr'}">Türkisch</button><button data-act="setbuch" data-v="de" aria-pressed="${S.me.buch === 'de'}">Deutsch</button></div>
+    <p class="row2 mt"><button class="btn alt" data-act="logout">Abmelden</button></p></div>`;
+}
+
+// ----- Gruppe -----
+function vGruppe() {
+  const b = S.board;
+  if (!b) return `<div class="card center"><p>Rangliste wird geladen …</p></div>`;
+  const mine = b.rank.find(x => x.code === S.me.gruppe) || { n: 0, course: 0, goal: 0, name: S.me.gname };
+  const pc = mine.n ? Math.round(mine.course / mine.n * 100) : 0;
+  return `<div class="card"><h2>Gruppe ${esc(mine.name)}</h2>${VIRTUE[mine.name] ? `<p class="sub">${esc(mine.name)}: ${esc(VIRTUE[mine.name])}</p>` : ''}
+    <p class="sub">Schaffen alle aus eurer Gruppe ihr Ziel, gewinnt ihr einen Aktivitäten-Gutschein über 100 €.</p>
+    <div class="row"><span>Auf Kurs (keinen Tag verpasst)</span><span>${mine.course} von ${mine.n}</span></div><div class="bar"><i style="width:${pc}%"></i></div>
+    ${mine.goal ? `<p class="small">Schon am Ziel: ${mine.goal}</p>` : ''}</div>
+  <div class="card"><h2>Gruppen-Rangliste</h2><p class="sub">Punkte pro Person im Durchschnitt – so sind kleine und große Gruppen fair. Tippe auf einen Namen für seine Bedeutung.</p>
+    <ul class="list">${b.rank.map((x, i) => `<li class="${x.code === S.me.gruppe ? 'me' : ''}" data-act="virt" data-c="${esc(x.code)}"><span class="rank">${i + 1}</span><span class="grow"><b>${esc(x.name)}</b> <span class="small">${x.klasse === '12' ? '11./12.' : esc(x.klasse) + '.'} Kl.</span>${S.open === x.code && VIRTUE[x.name] ? `<br><span class="small">${esc(VIRTUE[x.name])}</span>` : ''}</span><span class="pts">Ø ${x.avg} P.</span></li>`).join('')}</ul>
+    <p class="small">Stand: ${esc(b.at)}</p></div>
+  <div class="card"><h2>Gemeinsam geschafft</h2><ul class="list">
+    <li><span class="grow"><b>${b.streak14} Mädchen</b><br><span class="small">haben 14 Tage oder mehr am Stück geschafft</span></span></li>
+    <li><span class="grow"><b>${b.sec3} Mädchen</b><br><span class="small">haben schon 3 Buchteile oder mehr gelesen</span></span></li>
+    <li><span class="grow"><b>${b.bingoToday} Mädchen</b><br><span class="small">haben heute Bingo gemacht</span></span></li>
+    <li><span class="grow"><b>${b.active} Mädchen</b><br><span class="small">sind dabei</span></span></li></ul></div>`;
+}
+
+// ----- Mentorinnen, Mesul, Eyalet -----
+function vStaff() {
+  const d = S.sd;
+  if (!d) return `<div class="card center"><p>Wird geladen …</p></div>`;
+  const role = d.who.role;
+  let out = '';
+  if (role !== 'mentor' && !S.group) {
+    const gs = d.groups.filter(g => S.klasse === 'alle' || g.klasse === S.klasse);
+    const tot = gs.reduce((a, g) => ({ all: a.all + g.all, course: a.course + g.course, goal: a.goal + g.goal, quiet: a.quiet + g.quiet }), { all: 0, course: 0, goal: 0, quiet: 0 });
+    out += `<div class="stats"><div class="stat"><b>${tot.all}</b><span>angemeldet</span></div><div class="stat"><b>${tot.course}</b><span>auf Kurs</span></div><div class="stat"><b>${tot.quiet}</b><span>3+ Tage still</span></div></div>`;
+    if (role === 'admin') out += `<div class="chips mt">${['alle', '10', '12', '13'].map(k => `<button class="chip" data-act="klasse" data-v="${k}" aria-pressed="${S.klasse === k}">${k === 'alle' ? 'Alle' : k === '12' ? '11./12.' : k + '.'}</button>`).join('')}</div>`;
+    out += `<div class="card mt"><h2>Gruppen</h2><p class="sub">Tippe auf eine Gruppe für die Einzelansicht.</p><ul class="list">${gs.map(g => `<li data-act="grp" data-c="${esc(g.code)}" class="click"><span class="grow"><b>${esc(g.name)}</b> <span class="small">${esc(g.code)}${g.mentorin ? ' · ' + esc(g.mentorin) : ''}</span><br><span class="small">${g.all} angemeldet · ${g.course} auf Kurs · ${g.goal} am Ziel${g.quiet ? ` · <span class="warn">${g.quiet} still</span>` : ''}</span></span><span class="pts">Ø ${g.avg} P.</span></li>`).join('') || '<li>Keine Gruppen</li>'}</ul></div>`;
+    if (role === 'admin') out += `<p class="small">Alle Daten findest du auch im Google Sheet im Blatt „Übersicht“.</p>`;
+    out += `<p class="row2"><button class="btn alt" data-act="sreload">Aktualisieren</button></p>`;
+    return out;
+  }
+  const g = d.detail;
+  if (!g) return `<div class="card center"><p>Wird geladen …</p></div>`;
+  const since = x => x.since >= 99 ? 'nie' : x.since === 0 ? 'heute' : x.since === 1 ? 'gestern' : `vor ${x.since} Tagen`;
+  out += role !== 'mentor' ? `<p><button class="btn alt sm" data-act="grpback">‹ Alle Gruppen</button></p>` : '';
+  out += `<div class="card"><div class="wk"><h2>Gruppe ${esc(g.name)}</h2><span class="tag">${esc(g.code)}</span></div>
+    <p class="sub">Gruppencode für die Mädchen: <b class="code">${esc(g.join)}</b> <button class="lnk" data-act="copy" data-t="${esc(g.join)}">kopieren</button></p>
+    ${S.renaming ? `<div class="row2"><input id="newname" maxlength="20" value="${esc(g.name)}"><button class="btn sm" data-act="renamesave">Speichern</button><button class="btn alt sm" data-act="renamecancel">Abbrechen</button></div>` : `<button class="lnk" data-act="rename">Gruppennamen ändern</button>`}</div>
+  <div class="card"><h2>Wer braucht eine Nachricht?</h2><p class="sub">Tippe auf einen Namen für Treffen-Stempel, PIN und mehr.</p>
+    <ul class="list">${g.girls.map(x => `<li class="wrap click${x.zaehlt ? '' : ' dim'}" data-act="girl" data-id="${esc(x.id)}"><span class="grow"><b>${esc(x.name)}</b>${x.buch === 'de' ? ' <span class="tag sm">DE</span>' : ''}${x.sum.onCourse ? ' <span class="small">✓ auf Kurs</span>' : ''}<br><span class="small">Tage ${x.sum.days}/${x.sum.soFar} · Buch ${x.sum.sec}/8 · Kesit ${x.sum.kes}/6 · Treffen ${x.sum.meet}/7 · ${x.sum.pts} P.</span></span><span class="small ${x.since >= 4 ? 'warn' : ''}">${since(x)}</span>
+      ${S.open === x.id ? `<div class="detail" data-stop="1">
+        <p class="l">Treffen-Stempel</p><div class="meets">${[0, 1, 2, 3, 4, 5, 6].map(i => `<label class="chk m0"><input type="checkbox" data-act="stamp" data-id="${esc(x.id)}" data-i="${i}" ${x.treffen[i] ? 'checked' : ''}> ${i + 1}</label>`).join('')}</div>
+        <label class="chk wrapok"><input type="checkbox" data-act="count" data-id="${esc(x.id)}" ${x.zaehlt ? 'checked' : ''}> zählt für das Gruppenziel mit</label>
+        <p class="small">Serie: ${x.sum.streak} Tage · Quiz/Gedanken: ${x.sum.q}/8 · Manga: ${x.sum.man} · Bingo-Tage: ${x.sum.bingoDays}</p>
+        ${x.refl.length ? `<p class="l">Gedanken zum Buch</p>${x.refl.map(r => `<p class="refltxt"><b>Etappe ${r.i + 1}:</b> ${esc(r.t)}</p>`).join('')}` : ''}
+        <p>${S.pinShown[x.id] ? `Neue PIN für ${esc(x.name)}: <b class="code">${esc(S.pinShown[x.id])}</b>` : `<button class="btn alt sm" data-act="pin" data-id="${esc(x.id)}">Neue PIN erstellen</button>`}</p></div>` : ''}</li>`).join('') || '<li>Noch niemand angemeldet. Gib den Mädchen den Gruppencode.</li>'}</ul>
+    <p class="row2 mt"><button class="btn" data-act="remind">Erinnerung kopieren</button><button class="btn alt" data-act="sreload">Aktualisieren</button></p><p class="small" id="copied"></p></div>`;
+  if (d.board) out += `<div class="card"><h2>Gruppen-Rangliste</h2><ul class="list">${d.board.rank.map((x, i) => `<li class="${x.code === g.code ? 'me' : ''}"><span class="rank">${i + 1}</span><span class="grow"><b>${esc(x.name)}</b></span><span class="pts">Ø ${x.avg} P.</span></li>`).join('')}</ul></div>`;
+  return out;
+}
+
+// ---------- Aktionen ----------
+function copy(t) {
+  const done = () => { const c = $('#copied'); if (c) c.textContent = 'Kopiert ✓ – jetzt in WhatsApp einfügen.'; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, () => fallback());
+  else fallback();
+  function fallback() { const a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); done(); } catch (e) {} a.remove(); }
+}
+async function loadStaff(group) {
+  try { const j = await api('staffData', { code: S.staff.code, group: group || S.group || '' }); S.sd = j; S.cfg = j.cfg; S.staff = Object.assign(S.staff, j.who); }
+  catch (e) { if (/gibt es nicht/.test(e.message)) { logout(); return; } alert2(e.message); }
+  render();
+}
+function alert2(t) { setStatus(t, 4000); }
+function logout() { LS.del('by-token'); LS.del('by-staff'); S = Object.assign(S, { mode: 'start', me: null, token: null, staff: null, sd: null, group: null, open: null, quiz: null, msg: '' }); render(); }
+async function refreshBoard(force) {
+  if (!force && S.board && Date.now() - S.boardAt < 60000) return;
+  try { const j = await api('board'); S.board = j.board; S.boardAt = Date.now(); if (S.mode === 'girl') render(); } catch (e) {}
+}
+
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-act]'); if (!t) return;
+  if (t.dataset.act === 'girl' && e.target.closest('[data-stop]')) return;
+  const a = t.dataset.act;
+  if (a === 'mode') { S.mode = t.dataset.v; S.msg = ''; render(); return; }
+  if (a === 'neu') { keepForm(); S.form.neu = t.dataset.v === '1'; S.msg = ''; render(); return; }
+  if (a === 'buch') { keepForm(); S.form.buch = t.dataset.v; render(); return; }
+  if (a === 'logout') { logout(); return; }
+  if (a === 'retry') { flush(); return; }
+  if (a === 'tab') { S.tab = t.dataset.v; S.open = null; render(); window.scrollTo(0, 0); if (S.tab === 'gruppe' || S.tab === 'heute') refreshBoard(); return; }
+  if (a === 'week') { S.week = +t.dataset.k; render(); return; }
+  if (a === 'day') { const k = S.week || curWeek(), w = wk(k), j = +t.dataset.j; w.d[j] = w.d[j] ? 0 : 1; changed(true); return; }
+  if (a === 'hd') { wk(S.week || curWeek()).hd = t.checked ? 1 : 0; changed(false); return; }
+  if (a === 'bingo') { const d = todayISO(), s = st(); const b = s.bingo[d] || [0, 0, 0, 0, 0, 0, 0, 0, 0]; const before = BY.lines(b); b[+t.dataset.i] = b[+t.dataset.i] ? 0 : 1; s.bingo[d] = b; if (S.board && BY.lines(b) > 0 !== before > 0) S.board.bingoToday += BY.lines(b) > 0 ? 1 : -1; changed(true); return; }
+  if (a === 'sec') { const i = +t.dataset.i; st().sec[i] = t.checked ? 1 : 0; changed(true); return; }
+  if (a === 'kes') { st().kes[+t.dataset.i] = t.checked ? 1 : 0; changed(false); return; }
+  if (a === 'man') { st().man[t.dataset.n] = t.checked ? 1 : 0; changed(false); return; }
+  if (a === 'quiz') { S.quiz = { i: +t.dataset.i, a: [] }; render(); return; }
+  if (a === 'qa') { S.quiz.a[+t.dataset.n] = +t.dataset.m; const btn = document.querySelector('[data-act="qsend"]'); if (btn) btn.disabled = !QUIZ[S.quiz.i].every((q, n) => S.quiz.a[n] !== undefined); return; }
+  if (a === 'qsend') { const i = S.quiz.i, Q = QUIZ[i], s = Q.reduce((x, q, n) => x + (S.quiz.a[n] === q.c ? 1 : 0), 0); st().quiz[i] = { a: S.quiz.a.slice(), s }; changed(true); document.querySelector('.sheet') && document.querySelector('.sheet').scrollTo(0, 0); return; }
+  if (a === 'qclose') { S.quiz = null; render(); return; }
+  if (a === 'setbuch') { S.me.buch = t.dataset.v; changed(true); return; }
+  if (a === 'virt') { S.open = S.open === t.dataset.c ? null : t.dataset.c; render(); return; }
+  // Mitarbeiterinnen
+  if (a === 'klasse') { S.klasse = t.dataset.v; render(); return; }
+  if (a === 'grp') { S.group = t.dataset.c; S.open = null; S.sd.detail = null; render(); loadStaff(S.group); return; }
+  if (a === 'grpback') { S.group = null; S.open = null; render(); return; }
+  if (a === 'sreload') { setStatus('Wird aktualisiert …', 1500); loadStaff(); return; }
+  if (a === 'girl') { S.open = S.open === t.dataset.id ? null : t.dataset.id; render(); return; }
+  if (a === 'copy') { copy(t.dataset.t); return; }
+  if (a === 'rename') { S.renaming = true; render(); return; }
+  if (a === 'renamecancel') { S.renaming = false; render(); return; }
+  if (a === 'renamesave') { const n = $('#newname').value; try { const j = await api('rename', { code: S.staff.code, group: S.sd.detail.code, name: n }); S.sd.detail.name = j.name; S.renaming = false; loadStaff(); } catch (x) { alert2(x.message); } return; }
+  if (a === 'stamp') { const id = t.dataset.id, i = +t.dataset.i, v = t.checked; try { const j = await api('stamp', { code: S.staff.code, id, meet: i, value: v }); const x = S.sd.detail.girls.find(y => y.id === id); x.treffen = j.treffen; x.sum.meet = j.treffen.filter(Boolean).length; setStatus('Gespeichert ✓', 1500); render(); } catch (x) { t.checked = !v; alert2(x.message); } return; }
+  if (a === 'count') { const id = t.dataset.id, v = t.checked; try { await api('setCount', { code: S.staff.code, id, value: v }); const x = S.sd.detail.girls.find(y => y.id === id); x.zaehlt = v; setStatus('Gespeichert ✓', 1500); render(); } catch (x) { t.checked = !v; alert2(x.message); } return; }
+  if (a === 'pin') { const id = t.dataset.id; try { const j = await api('resetPin', { code: S.staff.code, id }); S.pinShown[id] = j.pin; render(); } catch (x) { alert2(x.message); } return; }
+  if (a === 'remind') {
+    const quiet = S.sd.detail.girls.filter(x => x.since >= 3 && x.zaehlt).map(x => x.name);
+    const url = location.origin + location.pathname;
+    const txt = quiet.length ? `Hallo ihr Lieben 🌸 ${quiet.join(', ')} – wir vermissen euch bei Benim Yolum! Tragt eure Tat der Woche ein, jeder Tag zählt für unser Gruppenziel 🔥 ${url}` : `Hallo ihr Lieben 🌸 Ihr seid super dabei! Denkt heute an eure Tat der Woche und das Tages-Bingo 🔥 ${url}`;
+    copy(txt); return;
+  }
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'remtime') { st().rem = t.value; const l = $('#icslink'); if (l) l.href = icsHref(t.value); changed(false); return; }
+  const f = t.dataset && t.dataset.field; if (!f || S.mode !== 'girl') return;
+  if (f === 'refl') { st().refl[t.dataset.i] = t.value; changed(false); return; }
+  wk(S.week || curWeek())[f] = t.value; changed(false);
+});
+function keepForm() { const fm = document.querySelector('form[data-form="girl"]'); if (!fm) return; S.form.join = fm.join.value; S.form.name = fm.name.value; S.form.pin = fm.pin.value; }
+document.addEventListener('submit', async e => {
+  const fm = e.target; e.preventDefault();
+  const btn = fm.querySelector('[type=submit]'); btn.disabled = true; S.msg = '';
+  try {
+    if (fm.dataset.form === 'staff') {
+      const code = fm.code.value.trim();
+      const j = await api('staffLogin', { code });
+      S.staff = Object.assign({ code }, j.who); S.cfg = j.cfg; LS.set('by-staff', code); S.mode = 'staff'; S.sd = null; S.group = null; render(); loadStaff(); return;
+    }
+    keepForm();
+    const data = { join: fm.join.value.trim(), name: fm.name.value.trim(), pin: fm.pin.value.trim(), buch: S.form.buch };
+    const j = await api(S.form.neu ? 'register' : 'login', data);
+    S.form.pin = '';
+    enterGirl(j);
+  } catch (x) { S.msg = x.message; render(); }
+});
+function enterGirl(j) {
+  S.token = j.token || S.token; LS.set('by-token', S.token);
+  S.me = j.me; fix(S.me.st); S.cfg = j.cfg; S.board = j.board; S.boardAt = Date.now();
+  const bk = LS.get('by-backup');
+  const restore = bk && bk.id === S.me.id && LS.get('by-unsaved');
+  if (restore) { S.me.st = fix(bk.st); S.me.buch = bk.buch || S.me.buch; }
+  S.mode = 'girl'; S.week = 0; render();
+  if (restore) changed(false);
+}
+
+// ---------- Start ----------
+(async function init() {
+  if (!API) { S.mode = 'nocfg'; render(); return; }
+  const tok = LS.get('by-token'), sc = LS.get('by-staff');
+  render();
+  if (tok) { try { S.token = tok; const j = await api('load', { token: tok }); enterGirl(j); return; } catch (e) { LS.del('by-token'); } }
+  if (sc) { try { const j = await api('staffLogin', { code: sc }); S.staff = Object.assign({ code: sc }, j.who); S.cfg = j.cfg; S.mode = 'staff'; render(); loadStaff(); return; } catch (e) { LS.del('by-staff'); } }
+  S.mode = 'start'; render();
+})();
+}
+
+</script>
 </body>
 </html>
